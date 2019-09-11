@@ -1,3 +1,5 @@
+function makeResponsive() {
+
 var svgWidth = 660;
 var svgHeight = 500;
 
@@ -32,89 +34,88 @@ d3.csv("assets/data/data.csv")
       //dd.healthcare = +dd.healthcare;
   
     
-    // Step 2: Create scale functions
+//  Create scale functions
     // ==============================
-    var xLinearScale = d3.scaleLinear()
-      //.domain([d3.extent(data, d => d.poverty)])
-      .domain([8,24])
-      .range([0, width]);
+var xLinearScale = d3.scaleLinear()
+  //.domain([d3.extent(data, d => d.poverty)])
+    .domain([8,24])
+    .range([0, width]);
 
-    var yLinearScale = d3.scaleLinear()
-     // .domain([d3.extent(data, d => d.healthcare)])
-      .domain([4,22])
-      .range([height, 0]);
+var yLinearScale = d3.scaleLinear()
+ // .domain([d3.extent(data, d => d.healthcare)])
+    .domain([4,22])
+    .range([height, 0]);
 
-    // Step 3: Create axis functions
-    // ==============================
-    var bottomAxis = d3.axisBottom(xLinearScale);
-    var leftAxis = d3.axisLeft(yLinearScale);
+//  Create axis functions
+  // ==============================
+var bottomAxis = d3.axisBottom(xLinearScale);
+var leftAxis = d3.axisLeft(yLinearScale);
 
-    // Step 4: Append Axes to the chart
-    // ==============================
-    chartGroup.append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(bottomAxis);
+//  Append Axes to the chart
+// ==============================
+  chartGroup.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
 
-    chartGroup.append("g")
-      .call(leftAxis);
+  chartGroup.append("g")
+    .call(leftAxis);
 
-    // Step 5: Create Circles
-    // ==============================
-    var circlesGroup = chartGroup.selectAll("circle")
+//  Create Circles
+// ==============================
+var circlesGroup = chartGroup.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
-      .attr("cx", function (d) { return xLinearScale(d.poverty); } )
-      .attr("cy", function (d) { return yLinearScale(d.healthcare); } )
-    //.attr("cx", d => xLinearScale(d.poverty))
-    //.attr("cy", d => yLinearScale(d.healthcare))
-      .attr("r", "12")
-      .style("fill", "#69b3a2" )
-      .attr("opacity", ".5");
+    .attr("cx", function (d) { return xLinearScale(d.poverty); } )
+    .attr("cy", function (d) { return yLinearScale(d.healthcare); } )
+    .attr("r", "12")
+    .style("fill", "#69b3a2" )
+    .attr("opacity", ".5");
 
-       // Appending a label to each data point
-   chartGroup.append("text")
-   .style("text-anchor", "middle")
-   .style("font-size", "12px")
-   .style("font-color","white")
-   .selectAll("tspan")
-   .data(data)
-   .enter()
-   .append("tspan")
-       .attr("x", function(data) {
-           return xLinearScale(data.poverty - 0);
-       })
-       .attr("y", function(data) {
-           return yLinearScale(data.healthcare - 0.2);
-       })
-       .text(function(data) {
+// Appending a label to each data point
+  chartGroup.append("text")
+      .style("text-anchor", "middle")
+      .style("font-size", "12px")
+      .style("font-color","white")
+      .selectAll("tspan")
+      .data(data)
+      .enter()
+      .append("tspan")
+      .attr("x", function(data) {
+         return xLinearScale(data.poverty - 0);
+    })
+      .attr("y", function(data) {
+          return yLinearScale(data.healthcare - 0.2);
+    })
+      .text(function(data) {
            return data.abbr
-       });
+    });
         
 
       
-    // Step 6: Initialize tool tip
+    //  Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
-      .attr("class", "tooltip")
-      .offset([80, -60])
-      .html(function(d) {
-        return (`${d.state}<br>Poverty: ${d.poverty}%<br>Obesity: ${d.obesity}%`);
-      });
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function(d) {
+           return (`${d.state}<br>Poverty: ${d.poverty}%<br>Obesity: ${d.obesity}%`);
+    });
 
-    // Step 7: Create tooltip in the chart
+    //  Create tooltip in the chart
     // ==============================
     chartGroup.call(toolTip);
 
-    // Step 8: Create event listeners to display and hide the tooltip
+    // Create "mouseover" event listener to display tooltip
     // ==============================
-    circlesGroup.on("click", function(data) {
+    circlesGroup.on("mouseover", function(data) {
       toolTip.show(data, this);
     })
-      // onmouseout event
+      // Create "mouseout" event listener to hide tooltip
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
       });
+     
 
     // Create axes labels
     chartGroup.append("text")
@@ -132,4 +133,10 @@ d3.csv("assets/data/data.csv")
 
        
   })
-    
+}
+  
+// When the browser loads, makeResponsive() is called.
+makeResponsive();
+
+// When the browser window is resized, makeResponsive() is called.
+d3.select(window).on("resize", makeResponsive);
