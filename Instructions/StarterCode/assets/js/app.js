@@ -1,4 +1,4 @@
-var svgWidth = 960;
+var svgWidth = 660;
 var svgHeight = 500;
 
 var margin = {
@@ -68,17 +68,38 @@ d3.csv("assets/data/data.csv")
       .attr("cy", function (d) { return yLinearScale(d.healthcare); } )
     //.attr("cx", d => xLinearScale(d.poverty))
     //.attr("cy", d => yLinearScale(d.healthcare))
-      .attr("r", "10")
+      .attr("r", "12")
       .style("fill", "#69b3a2" )
       .attr("opacity", ".5");
 
+       // Appending a label to each data point
+   chartGroup.append("text")
+   .style("text-anchor", "middle")
+   .style("font-size", "12px")
+   .style("font-color","white")
+   .selectAll("tspan")
+   .data(data)
+   .enter()
+   .append("tspan")
+       .attr("x", function(data) {
+           return xLinearScale(data.poverty - 0);
+       })
+       .attr("y", function(data) {
+           return yLinearScale(data.healthcare - 0.2);
+       })
+       .text(function(data) {
+           return data.abbr
+       });
+        
+
+      
     // Step 6: Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
       .attr("class", "tooltip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.state}<br>Poverty: ${d.poverty}<br>Obesity: ${d.obesity}`);
+        return (`${d.state}<br>Poverty: ${d.poverty}%<br>Obesity: ${d.obesity}%`);
       });
 
     // Step 7: Create tooltip in the chart
@@ -108,5 +129,7 @@ d3.csv("assets/data/data.csv")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "axisText")
       .text("In poverty(%)");
+
+       
+  })
     
-    }) 
