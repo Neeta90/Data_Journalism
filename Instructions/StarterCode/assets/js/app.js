@@ -29,22 +29,20 @@ d3.csv("assets/data/data.csv")
      console.log(data);
     // Step 1: Parse Data/Cast as numbers
     // ==============================
-    //data.forEach(function(dd) {
-     // dd.poverty = +dd.poverty;
-      //dd.healthcare = +dd.healthcare;
-  
+    data.forEach(function(dd) {
+      dd.poverty = +dd.poverty;
+      dd.healthcare = +dd.healthcare;
+    });
     
 //  Create scale functions
-    // ==============================
-var xLinearScale = d3.scaleLinear()
-  //.domain([d3.extent(data, d => d.poverty)])
-    .domain([8,24])
-    .range([0, width]);
+    var xLinearScale = d3.scaleLinear()
+       .domain([d3.min(data, d=>d.poverty)*0.8,
+      d3.max(data, d => d.poverty)*1.2])
+      .range([0, width]);
+      var yLinearScale = d3.scaleLinear()
+     .domain([0, d3.max(data, d => d.healthcare)*1.2])
+     .range([height, 0]);
 
-var yLinearScale = d3.scaleLinear()
- // .domain([d3.extent(data, d => d.healthcare)])
-    .domain([4,22])
-    .range([height, 0]);
 
 //  Create axis functions
   // ==============================
